@@ -80,7 +80,7 @@ from .backend.compat import wait
 from .backend.context import cpu_count
 from .backend.queues import Queue, SimpleQueue, Full
 from .backend.utils import recursive_terminate
-from .cloudpickle_wrapper import _wrap_non_picklable_objects
+from .cloudpickle_wrapper import _wrap_objects_when_needed
 
 try:
     from concurrent.futures.process import BrokenProcessPool as _BPPException
@@ -269,9 +269,9 @@ class _CallItem(object):
     def __getstate__(self):
         return (
             self.work_id,
-            _wrap_non_picklable_objects(self.fn),
-            [_wrap_non_picklable_objects(a) for a in self.args],
-            {k: _wrap_non_picklable_objects(a) for k, a in self.kwargs.items()}
+            _wrap_objects_when_needed(self.fn),
+            [_wrap_objects_when_needed(a) for a in self.args],
+            {k: _wrap_objects_when_needed(a) for k, a in self.kwargs.items()}
         )
 
     def __setstate__(self, state):
@@ -884,8 +884,8 @@ class ProcessPoolExecutor(_base.Executor):
 
         if initializer is not None and not callable(initializer):
             raise TypeError("initializer must be a callable")
-        self._initializer = _wrap_non_picklable_objects(initializer)
-        self._initargs = [_wrap_non_picklable_objects(a) for a in initargs]
+        self._initializer = _wrap_objects_when_needed(initializer)
+        self._initargs = [_wrap_objects_when_needed(a) for a in initargs]
 
         _check_max_depth(self._context)
 
