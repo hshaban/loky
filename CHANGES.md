@@ -1,3 +1,7 @@
+### 2.4.0dev0 - In development
+
+- Add a `wrap_non_picklable_objects` decorator in `loky` to make it easy to fix serialization failure for nested functions defined in the `__main__` module.
+
 ### 2.3.1 - 2018-09-13 - Bug fix release
 
 - Improve error reporting when a worker process is terminated abruptly
